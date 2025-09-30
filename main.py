@@ -5,6 +5,7 @@
 
 # -------------------------------------------
 
+from contextlib import asynccontextmanager
 import logging
 
 from fastapi import FastAPI
@@ -15,6 +16,8 @@ from fastapi.responses import ORJSONResponse
 from app.routers.system import (
     router as system_router,
 )
+from app.routers.item import router as item_router
+from app.utils.database import create_tables
 
 
 logging.basicConfig(
@@ -24,7 +27,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = FastAPI(default_response_class=ORJSONResponse)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Initializing database...")
+    create_tables()
+    logger.info("Database initialized.")
+    yield
+
+
+app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
+
 
 cors_origins = [
     "http://localhost",
@@ -41,3 +54,4 @@ logger.info(f"CORS enabled for origins: {cors_origins}")
 
 logger.info("Starting API")
 app.include_router(system_router)
+app.include_router(item_router)
