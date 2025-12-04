@@ -372,33 +372,7 @@ def process_data(data: bytes):
 - `def` runs in thread pool (limited to 40 threads by default)
 - Never block the event loop with CPU work in `async def`
 
-### 2. The `...` (Ellipsis) in Pydantic
-
-```python
-class ItemCreate(BaseModel):
-    name: str = Field(...)          # Required (no default)
-    price: float = Field(10.0)      # Optional (default 10.0)
-    description: str | None = None  # Optional (default None)
-```
-
-The `...` means **required field** - it's Pydantic's sentinel value.
-
-### 3. `str | None` vs `Optional[str]`
-
-Both work identically in Python 3.10+:
-
-```python
-# Modern (PEP 604)
-description: str | None
-
-# Legacy (typing module)
-from typing import Optional
-description: Optional[str]
-```
-
-Use `str | None` for cleaner, more Pythonic code.
-
-### 4. `run_sync()` for DDL Operations
+### 2. `run_sync()` for DDL Operations
 
 ```python
 async def create_tables():
@@ -412,7 +386,7 @@ async def create_tables():
 - `run_sync()` runs them in thread pool (non-blocking)
 - This is the official SQLAlchemy pattern for async DDL
 
-### 5. Database Engine: Global vs Per-Request
+### 3. Database Engine: Global vs Per-Request
 
 ```python
 # CORRECT - Engine created once
@@ -433,6 +407,8 @@ async def get_db():
 - Engine creation: ~50-100ms (once at startup)
 - Session from pool: ~0.1-1ms (per request)
 - 1000x faster with proper pooling
+
+### MORE LEARNINGS SOON
 
 ---
 
