@@ -1,4 +1,3 @@
-```markdown
 # Performance-Optimized FastAPI Solution Design
 
 A production-ready FastAPI application demonstrating performance best practices and architectural patterns for high-throughput APIs.
@@ -43,7 +42,7 @@ This project showcases real-world performance optimizations that can improve API
 |  - AsyncEngine with aiosqlite                               |
 |  - Non-blocking I/O operations                              |
 +-------------------------------------------------------------+
-
+```
 ---
 
 ## Key Performance Patterns
