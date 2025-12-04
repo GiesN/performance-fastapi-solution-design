@@ -10,10 +10,10 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 COMMON_MODEL_CONFIG = ConfigDict(
-    validate_assignment=False,
-    validate_default=False,
-    str_strip_whitespace=True,
-    extra="ignore",
+    validate_assignment=False,  # Disable assignment validation for performance, API schemas are usually immutable after creation and are validated on input and never modified.
+    validate_default=False,  # Skip default value validation for performance as defaults are controlled by the codebase.
+    str_strip_whitespace=True,  # Strip whitespace from strings
+    extra="ignore",  # Ignore extra fields to reduce overhead
 )
 
 
@@ -23,8 +23,8 @@ class ItemBase(BaseModel):
     model_config = COMMON_MODEL_CONFIG
 
     name: str = Field(..., min_length=1, max_length=255, description="Item name")
-    description: Optional[str] = Field(None, description="Item description")
-    price: Optional[float] = Field(
+    description: str | None = Field(None, description="Item description")
+    price: float | None = Field(
         None, ge=0, description="Item price (must be non-negative)"
     )
     is_active: bool = Field(True, description="Whether the item is active")
@@ -39,14 +39,14 @@ class ItemUpdate(BaseModel):
 
     model_config = COMMON_MODEL_CONFIG
 
-    name: Optional[str] = Field(
+    name: str | None = Field(
         None, min_length=1, max_length=255, description="Item name"
     )
-    description: Optional[str] = Field(None, description="Item description")
-    price: Optional[float] = Field(
+    description: str | None = Field(None, description="Item description")
+    price: float | None = Field(
         None, ge=0, description="Item price (must be non-negative)"
     )
-    is_active: Optional[bool] = Field(None, description="Whether the item is active")
+    is_active: bool | None = Field(None, description="Whether the item is active")
 
 
 class ItemResponse(ItemBase):
@@ -59,7 +59,7 @@ class ItemResponse(ItemBase):
 
     id: int = Field(..., description="Unique item identifier")
     created_at: datetime = Field(..., description="Creation timestamp")
-    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+    updated_at: datetime | None = Field(None, description="Last update timestamp")
 
 
 class ItemList(BaseModel):
@@ -80,8 +80,8 @@ class ItemQueryParams(BaseModel):
 
     page: int = Field(1, ge=1, description="Page number (starts at 1)")
     per_page: int = Field(10, ge=1, le=100, description="Items per page")
-    is_active: Optional[bool] = Field(None, description="Filter by active flag")
-    q: Optional[str] = Field(
+    is_active: bool | None = Field(None, description="Filter by active flag")
+    q: str | None = Field(
         None,
         min_length=1,
         max_length=255,

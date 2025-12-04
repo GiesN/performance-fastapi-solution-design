@@ -30,9 +30,9 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initializing database...")
-    create_tables()
-    logger.info("Database initialized.")
+    logger.info("Initializing tables.")
+    await create_tables()
+    logger.info("Tables initialized.")
     yield
 
 
